@@ -1,0 +1,9 @@
+{% if contributions | length > 0 %}
+    <ul>
+        {% for contribution in contributions %}
+            <li>
+                {% include 'contribution/partial/' ~ partial %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

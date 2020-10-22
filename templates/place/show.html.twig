@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Place{% endblock %}
+
+{% block pageheader %} 
+    <h1>Place</h1>
+{% endblock %} 
+
+{% block body %}
+    <div class="btn-toolbar">
+        <div class="btn-group pull-right">
+            <a href="{{ path('place_index') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-arrow-left"></span> Back
+            </a>
+            {% if is_granted('ROLE_CONTENT_ADMIN') %}
+                <a href="{{ path('place_edit', { 'id': place.id }) }}" class="btn btn-default">
+                    <span class='glyphicon glyphicon-edit'></span> Edit
+                </a>
+                <a href="{{ path('place_delete', { 'id': place.id }) }}" class="btn btn-default" data-confirm="Are you sure you want to delete this place?">
+                    <span class='glyphicon glyphicon-remove'></span> Delete
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <table class="table table-bordered table-condensed table-hover table-striped">
+        <tbody>
+            <tr>
+                <th>Place Name</th>
+                <td>{{ place.placeName }}</td>
+            </tr><tr>
+                <th>Place URI</th>
+                <td>{{ place.placeUri }}</td>
+            </tr><tr>
+                <th>In the Lake District</th>
+                <td>{% if place.inLakeDistrict %}Yes{% else %}No{% endif %}</td>
+            </tr><tr>
+                <th>Latitude</th>
+                <td>{{ place.latitude }}</td>
+            </tr><tr>
+                <th>Longitude</th>
+                <td>{{ place.longitude }}</td>
+            </tr><tr>
+                <th>Region ID</th>
+                <td>{{ place.regionId }}</td>
+            </tr><tr>
+                <th>Country ID</th>
+                <td>{{ place.countryId }}</td>
+            </tr>        
+            <tr>
+                <th>Books</th>         
+                <td>
+                    {% if place.books | length > 0 %}
+                        <ul>
+                            {% for books in place.books %}
+                                <li>
+                                    <a href="{{ path("book_show", {"id":books.id}) }}">
+                                        {{ books }}
+                                    </a>
+                                </li>
+                            {% endfor %} 
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>        
+            <tr>
+                <th>Residents</th>         
+                <td>
+                    {{ include('people/partial/list.html.twig', { people: place.residents }) }}
+                </td>
+            </tr>        
+            <tr>
+                <th>Travellers</th>         
+                <td>
+                    {{ include('people/partial/list.html.twig', { people: place.travellers }) }}
+                </td>
+            </tr>        
+        </tbody>
+    </table>
+    {% if place.otherNationalEditions | length > 0 %}    
+        <h2>Other National Editions</h2>
+        <ul>
+            {% for otherNationalEditions in place.otherNationalEditions %}
+                <li>
+                    <a href="{{ path("other_national_edition_show", {"id":otherNationalEditions.id}) }}">
+                        {{ otherNationalEditions }}
+                    </a>
+                </li>
+            {% endfor %} 
+        </ul>
+    {% endif %}
+    {% if place.peopleBorn | length > 0 %}    
+        <h2>Person Born</h2>
+        {% embed 'people/partial/list.html.twig' with { 'people': place.peopleBorn } %}
+            {% block callback %}{{ person }} b.{{ person.birthDate }}{% endblock %}
+        {% endembed %}
+    {% endif %}
+    {% if place.peopleDied | length > 0 %}    
+        <h2>Person Died</h2>
+        {% embed 'people/partial/list.html.twig' with { 'people': place.peopleDied } %}
+            {% block callback %}{{ person }} d.{{ person.deathDate }}{% endblock %}
+        {% endembed %}
+    {% endif %}
+{% endblock %}

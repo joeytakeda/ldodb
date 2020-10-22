@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Keywords{% endblock %}
+
+{% block pageheader %}
+    <h1>Keyword List</h1>
+    <p class="count">
+        Displaying {{ keywords|length }} keywords of {{ keywords.getTotalItemCount }} total.
+    </p>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'partial/search.html.twig' with {'route': 'keyword_search', 'label': 'Keyword search'} %}
+
+    <div class='btn-toolbar pull-right'>
+        <div class='btn-group'>
+            {% if is_granted('ROLE_CONTENT_ADMIN') %}
+                <a href="{{ path('keyword_new') }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span> New
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <table class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
+            <tr><th>Keyword</th><th>Entry Count</th></tr>
+        </thead>
+        <tbody>
+            {% for keyword in keywords %}
+                <tr>
+                    <td>
+                        <a href="{{ path('keyword_show', { 'id': keyword.id }) }}">
+                            {{ keyword.keyword }}
+                        </a>
+                    </td>
+                    <td>{{ keyword.books.count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(keywords) }}
+    </div>
+
+{% endblock %}

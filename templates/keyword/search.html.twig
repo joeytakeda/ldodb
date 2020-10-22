@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Keyword Search{% endblock %}
+
+{% block pageheader %}
+    <h1>Keyword Search</h1>
+    {% if keywords|length %}
+        <p class="count">
+            Displaying {{ keywords|length }} keywords of {{ keywords.getTotalItemCount }} total.
+        </p>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'partial/search.html.twig' with {'route': 'keyword_search', 'label': 'Keyword search'} %}
+
+    {% if keywords|length %}
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Keyword</th>
+                    <th>Preferredkeyword</th>            </tr>
+            </thead>
+            <tbody>
+                {% for keyword in keywords %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('keyword_show', { 'id': keyword.id }) }}">
+                                {{ keyword.keyword }}
+                            </a>
+                        </td>
+                        <td>{% if keyword.preferredKeyword %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="navigation">
+            {{ knp_pagination_render(keywords) }}
+        </div>
+    {% endif %}
+
+{% endblock %}
